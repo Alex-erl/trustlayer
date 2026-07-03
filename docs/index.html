@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Verifiable accountability for AI agents — tamper-evident, offline-verifiable evidence bundles.">
+<title>TrustLayer — verifiable accountability for AI agents</title>
+<style>
+  :root {
+    --ink: #0E1520;
+    --ink-2: #0A0F17;
+    --panel: #141D2B;
+    --panel-2: #19233390;
+    --line: #253248;
+    --line-soft: #1D2839;
+    --text: #E9EEF7;
+    --muted: #97A4BA;
+    --muted-2: #67768F;
+    --brand: #5B9DFF;
+    --brand-2: #7FB4FF;
+    --ok: #2FBF8F;
+    --ok-soft: rgba(47,191,143,.13);
+    --bad: #EF5B6B;
+    --bad-soft: rgba(239,91,107,.12);
+    --warn: #E6B450;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --maxw: 1120px;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1100px 620px at 80% -10%, rgba(91,157,255,.10), transparent 60%),
+      radial-gradient(900px 520px at -5% 8%, rgba(47,191,143,.07), transparent 55%),
+      var(--ink);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: var(--brand); text-decoration: none; }
+  a:hover { color: var(--brand-2); }
+
+  code { font-family: var(--mono); font-size: .88em; background: rgba(255,255,255,.06); border: 1px solid var(--line-soft); border-radius: 5px; padding: 1px 6px; color: var(--text); }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  .eyebrow {
+    font: 600 12px/1.4 var(--mono);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 18px;
+  }
+  .eyebrow .dot { color: var(--ok); }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(10px);
+    background: color-mix(in srgb, var(--ink) 82%, transparent);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 650; letter-spacing: -.01em; color: var(--text); }
+  .brand .glyph {
+    width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center;
+    background: linear-gradient(145deg, #24406e, #16233a);
+    border: 1px solid #33507e; color: var(--brand-2); font-size: 14px;
+  }
+  .nav-links { display: flex; gap: 26px; align-items: center; }
+  .nav-links a { color: var(--muted); font-size: 14px; font-weight: 500; }
+  .nav-links a:hover { color: var(--text); }
+  @media (max-width: 720px) { .nav-links a:not(.nav-cta) { display: none; } }
+  .nav-cta {
+    border: 1px solid var(--line); border-radius: 8px; padding: 7px 13px !important;
+    color: var(--text) !important;
+  }
+  .nav-cta:hover { border-color: var(--brand); }
+
+  /* ---------- hero ---------- */
+  .hero { padding: 78px 0 30px; }
+  .hero h1 {
+    font-size: clamp(34px, 6vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -.028em;
+    font-weight: 680;
+    margin: 0 0 22px;
+    text-wrap: balance;
+    max-width: 15ch;
+  }
+  .hero h1 .accent { color: var(--ok); }
+  .lede { font-size: clamp(16px, 2.1vw, 20px); color: var(--muted); max-width: 60ch; margin: 0 0 30px; }
+  .lede strong { color: var(--text); font-weight: 600; }
+
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font: 600 15px var(--sans); padding: 12px 20px; border-radius: 10px;
+    border: 1px solid transparent; cursor: pointer; transition: transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--brand); color: #08101f; }
+  .btn.primary:hover { background: var(--brand-2); }
+  .btn.ghost { background: transparent; border-color: var(--line); color: var(--text); }
+  .btn.ghost:hover { border-color: var(--brand); color: var(--text); }
+
+  .trust-strip { display: flex; flex-wrap: wrap; gap: 8px 10px; padding: 0; margin: 0; list-style: none; }
+  .trust-strip li {
+    font: 500 12.5px var(--mono); color: var(--muted);
+    border: 1px solid var(--line-soft); border-radius: 999px; padding: 5px 12px;
+    background: rgba(255,255,255,.015);
+  }
+  .trust-strip li b { color: var(--ok); font-weight: 700; }
+
+  /* ---------- section scaffolding ---------- */
+  section { scroll-margin-top: 74px; }
+  .band { padding: 66px 0; border-top: 1px solid var(--line-soft); }
+  .section-head { max-width: 62ch; margin-bottom: 34px; }
+  .section-head h2 { font-size: clamp(24px, 3.4vw, 34px); letter-spacing: -.02em; margin: 8px 0 12px; font-weight: 660; text-wrap: balance; }
+  .section-head p { color: var(--muted); font-size: 17px; margin: 0; }
+
+  /* ---------- demo ---------- */
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 900px) { .demo-grid { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  }
+  .panel-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 14px 16px; border-bottom: 1px solid var(--line-soft);
+  }
+  .panel-title { font: 600 12px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .panel-body { padding: 16px; }
+
+  .state-pill { font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .state-pill.genuine { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); background: var(--ok-soft); }
+  .state-pill.tampered { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, var(--line)); background: var(--bad-soft); }
+
+  /* receipt */
+  .receipt dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 9px 16px; }
+  .receipt dt { font: 500 12px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted-2); align-self: center; }
+  .receipt dd { margin: 0; font-size: 14px; }
+  .receipt dd.mono { font-family: var(--mono); font-size: 12.5px; color: var(--muted); word-break: break-all; }
+  .amount { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .changed { color: var(--bad) !important; }
+
+  .tamper-note {
+    margin: 14px 0 4px; font-size: 13px; color: var(--muted);
+    border-left: 2px solid var(--line); padding: 6px 0 6px 12px; min-height: 20px;
+  }
+  .tamper-note.active { border-left-color: var(--bad); color: #f0b8bf; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip {
+    font: 500 12.5px var(--sans); padding: 8px 12px; border-radius: 8px; cursor: pointer;
+    background: rgba(255,255,255,.03); border: 1px solid var(--line); color: var(--text);
+    transition: border-color .14s ease, background .14s ease;
+  }
+  .chip:hover { border-color: var(--brand); }
+  .chip.reset { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 35%, var(--line)); }
+  .chip:focus-visible, .btn:focus-visible, a:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+  .raw-toggle { margin-top: 16px; }
+  .raw-toggle summary { cursor: pointer; font: 500 12.5px var(--mono); color: var(--muted); list-style: none; }
+  .raw-toggle summary::-webkit-details-marker { display: none; }
+  .raw-toggle summary::before { content: "▸ "; color: var(--muted-2); }
+  .raw-toggle[open] summary::before { content: "▾ "; }
+  .raw {
+    margin: 12px 0 0; padding: 14px; background: var(--ink-2); border: 1px solid var(--line-soft);
+    border-radius: 10px; overflow-x: auto; font: 12px/1.5 var(--mono); color: #b9c6dd; max-height: 320px;
+  }
+
+  /* verdict */
+  .verdict {
+    display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 12px;
+    border: 1px solid var(--line); margin-bottom: 18px; transition: background .3s ease, border-color .3s ease;
+  }
+  .verdict .seal { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; font-size: 20px; flex: none; }
+  .verdict .v-title { font-weight: 680; font-size: 18px; letter-spacing: -.01em; }
+  .verdict .v-sub { font-size: 13px; color: var(--muted); }
+  .verdict.ok { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 40%, var(--line)); }
+  .verdict.ok .seal { background: color-mix(in srgb, var(--ok) 22%, transparent); color: var(--ok); }
+  .verdict.ok .v-title { color: var(--ok); }
+  .verdict.bad { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 40%, var(--line)); }
+  .verdict.bad .seal { background: color-mix(in srgb, var(--bad) 20%, transparent); color: var(--bad); }
+  .verdict.bad .v-title { color: var(--bad); }
+
+  .checks { list-style: none; margin: 0 0 4px; padding: 0; display: grid; gap: 2px; }
+  .checks li {
+    display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start;
+    padding: 10px 8px; border-radius: 8px; transition: background .2s ease;
+  }
+  .checks li + li { border-top: 1px solid var(--line-soft); }
+  .checks .ic { font: 700 14px var(--mono); text-align: center; line-height: 1.4; }
+  .checks .nm { font-weight: 600; font-size: 14px; }
+  .checks .dt { font-size: 12.5px; color: var(--muted); }
+  .checks li.ok .ic { color: var(--ok); }
+  .checks li.bad .ic { color: var(--bad); }
+  .checks li.na .ic, .checks li.unsupported .ic { color: var(--muted-2); }
+  .checks li.bad { background: var(--bad-soft); }
+
+  .hashes { margin-top: 16px; border-top: 1px solid var(--line-soft); padding-top: 14px; display: grid; gap: 12px; }
+  .hrow .hlabel { font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 5px; }
+  .hrow .hval { font: 11.5px var(--mono); word-break: break-all; color: var(--muted); }
+  .hrow .hval .tag { display: inline-block; min-width: 78px; color: var(--muted-2); }
+  .hrow .hval.match .num { color: var(--ok); }
+  .hrow .hval.mismatch .num { color: var(--bad); }
+
+  .anchors { margin-top: 16px; border-top: 1px solid var(--line-soft); padding-top: 14px; }
+  .anchors .alabel { font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 8px; }
+  .anchors ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .anchors li { font: 12.5px var(--mono); color: var(--muted); display: flex; gap: 8px; }
+  .anchors li b { color: var(--text); font-weight: 600; }
+
+  .demo-note { margin-top: 16px; font-size: 13px; color: var(--muted-2); text-align: center; }
+  .demo-note b { color: var(--muted); font-weight: 600; }
+
+  /* ---------- pipeline ---------- */
+  .pipe { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  @media (max-width: 900px) { .pipe { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 460px) { .pipe { grid-template-columns: 1fr; } }
+  .step {
+    position: relative; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 14px;
+  }
+  .step .n { font: 700 11px var(--mono); color: var(--brand); letter-spacing: .1em; }
+  .step h3 { font-size: 14.5px; margin: 8px 0 6px; letter-spacing: -.01em; }
+  .step p { font-size: 12.5px; color: var(--muted); margin: 0; }
+  .step .k { display: block; font: 11px var(--mono); color: var(--muted-2); margin-top: 8px; word-break: break-word; }
+
+  /* ---------- value cards ---------- */
+  .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .card .ci { font-size: 20px; }
+  .card h3 { margin: 12px 0 8px; font-size: 17px; letter-spacing: -.01em; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+  /* ---------- stats ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 780px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .stat .num { font: 700 28px var(--mono); letter-spacing: -.02em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .stat .lbl { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+  /* ---------- standards ---------- */
+  .std { display: flex; flex-wrap: wrap; gap: 8px; }
+  .std span { font: 500 12.5px var(--mono); color: var(--muted); border: 1px solid var(--line-soft); border-radius: 8px; padding: 7px 12px; }
+
+  /* ---------- footer ---------- */
+  footer { border-top: 1px solid var(--line-soft); padding: 46px 0 60px; margin-top: 20px; }
+  .foot-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; }
+  .foot-cta h3 { font-size: 20px; margin: 0 0 8px; letter-spacing: -.01em; }
+  .foot-cta p { color: var(--muted); margin: 0; max-width: 46ch; font-size: 14.5px; }
+  .foot-links { display: flex; gap: 34px; flex-wrap: wrap; }
+  .foot-col h4 { font: 600 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted-2); margin: 0 0 12px; }
+  .foot-col a { display: block; color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+  .foot-col a:hover { color: var(--text); }
+  .colophon { margin-top: 34px; padding-top: 20px; border-top: 1px solid var(--line-soft); font-size: 12.5px; color: var(--muted-2); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+
+<header class="nav">
+  <div class="wrap">
+    <div class="brand"><span class="glyph">◈</span> TrustLayer</div>
+    <nav class="nav-links">
+      <a href="#demo">Live demo</a>
+      <a href="#how">How it works</a>
+      <a href="#why">Why it matters</a>
+      <a class="nav-cta" href="#opensource">Open source</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Open trust infrastructure <span class="dot">·</span> built for NGI / NLnet</p>
+      <h1>Prove what your AI agents did — <span class="accent">without trusting us.</span></h1>
+      <p class="lede">
+        Autonomous agents move money, sign, and decide on people's behalf. TrustLayer turns every
+        agent action into a tamper-evident <strong>evidence bundle</strong> — bound to the agent's
+        identity and authority, witnessed by independent sources, and <strong>verifiable offline by
+        anyone</strong>. No database to trust. No vendor lock-in. Just cryptography you can re-check yourself.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="#demo">Verify a real record, live ↓</a>
+        <a class="btn ghost" href="#how">See how it works</a>
+      </div>
+      <ul class="trust-strip">
+        <li>eIDAS 2 aligned</li>
+        <li>EU AI Act <b>Art. 12</b></li>
+        <li>offline-verifiable</li>
+        <li>multi-anchor</li>
+        <li>open standards</li>
+        <li>no lock-in</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="demo" class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Live · runs in your browser</p>
+        <h2>Don't take our word for it. Tamper with the record.</h2>
+        <p>
+          Below is a <em>real</em> evidence bundle produced by the TrustLayer engine. Change a value or
+          forge a signature, then watch the offline verifier catch it — the exact same checks a regulator
+          or auditor would run, executed here with Web Crypto. Nothing is sent anywhere.
+        </p>
+      </div>
+
+      <div class="demo-grid">
+        <!-- bundle / tamper panel -->
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">Evidence bundle</span>
+            <span id="statePill" class="state-pill genuine">genuine</span>
+          </div>
+          <div class="panel-body">
+            <div class="receipt">
+              <dl>
+                <dt>Action</dt><dd id="f-action">charge.created</dd>
+                <dt>Amount</dt><dd class="amount" id="f-amount">4200 EUR</dd>
+                <dt>Agent</dt><dd class="mono" id="f-agent">did:key:z6Mkee…sb76d</dd>
+                <dt>Controller</dt><dd class="mono" id="f-issuer">did:key:z6MkwB…uGwEP</dd>
+                <dt>Mandate</dt><dd id="f-scope">charge.created ≤ 5000 EUR</dd>
+              </dl>
+            </div>
+            <p id="tamperNote" class="tamper-note">Genuine record, exactly as sealed by the engine.</p>
+            <div class="controls">
+              <button class="chip reset" data-scn="genuine">Reset</button>
+              <button class="chip" data-scn="amount">Change the amount</button>
+              <button class="chip" data-scn="action">Alter the action</button>
+              <button class="chip" data-scn="forge">Forge a signature</button>
+              <button class="chip" data-scn="deleg">Break the delegation</button>
+            </div>
+            <details class="raw-toggle">
+              <summary>Show raw JSON</summary>
+              <pre class="raw" id="rawJson"></pre>
+            </details>
+          </div>
+        </div>
+
+        <!-- report panel -->
+        <div class="panel">
+          <div class="panel-head">
+            <span class="panel-title">Offline verification</span>
+            <span class="panel-title" style="text-transform:none;letter-spacing:0">SHA-256 · Ed25519 · did:key</span>
+          </div>
+          <div class="panel-body">
+            <div id="verdict" class="verdict ok">
+              <div class="seal" id="seal">✓</div>
+              <div>
+                <div class="v-title" id="vTitle">Verified</div>
+                <div class="v-sub" id="vSub">Every self-contained check passed.</div>
+              </div>
+            </div>
+
+            <ul class="checks" id="checks"></ul>
+
+            <div class="hashes">
+              <div class="hrow">
+                <div class="hlabel">bundle_hash — recomputed vs recorded</div>
+                <div class="hval" id="h-bundle"></div>
+              </div>
+              <div class="hrow">
+                <div class="hlabel">payload_hash — recomputed vs recorded</div>
+                <div class="hval" id="h-payload"></div>
+              </div>
+            </div>
+
+            <div class="anchors">
+              <div class="alabel">Independent witnesses (re-verify online, on their own medium)</div>
+              <ul id="anchorList"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="demo-note">Open-source verifiers in <b>JavaScript</b> and <b>Rust</b> (Apache-2.0) run the same checks as a CLI — byte-for-byte compatible with the Elixir reference across all three languages.</p>
+    </div>
+  </section>
+
+  <section id="how" class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">The pipeline</p>
+        <h2>Identity and authority in. A self-provable record out.</h2>
+        <p>Every step uses open standards and deterministic cryptography, so the final bundle can be reconstructed and checked by anyone, anywhere — no access to the service required.</p>
+      </div>
+      <div class="pipe">
+        <div class="step"><span class="n">01</span><h3>Identity &amp; mandate</h3><p>The agent gets a <code>did:key</code> and a signed, scoped authorization.</p><span class="k">did:key · W3C VC · mandate</span></div>
+        <div class="step"><span class="n">02</span><h3>Agent acts</h3><p>The action and its payload are recorded as an immutable event.</p><span class="k">event + payload</span></div>
+        <div class="step"><span class="n">03</span><h3>Hash</h3><p>SHA-256 over canonical JSON — deterministic across machines.</p><span class="k">canonical · SHA-256</span></div>
+        <div class="step"><span class="n">04</span><h3>Multi-anchor</h3><p>The hash is witnessed by several independent media at once.</p><span class="k">notary · log · RFC 3161 · ledger</span></div>
+        <div class="step"><span class="n">05</span><h3>Seal bundle</h3><p>Everything is packaged and sealed with a bundle hash.</p><span class="k">evidence bundle</span></div>
+        <div class="step"><span class="n">06</span><h3>Verify offline</h3><p>Anyone re-checks integrity, identity, authority — with no server.</p><span class="k">any language · keyless</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why" class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Why it matters</p>
+        <h2>A human-centric trust primitive for the agent economy.</h2>
+      </div>
+      <div class="cards">
+        <div class="card"><div class="ci">🔍</div><h3>Verify, don't trust</h3><p>Verification is public, keyless, and offline. Auditors and regulators re-check the math themselves — the operator can't fake, edit, or back-date a record.</p></div>
+        <div class="card"><div class="ci">🧩</div><h3>Open by design</h3><p>Open format spec, Apache-2.0 verifiers, self-hostable server. Bundles are plain JSON — you are never locked to one vendor to read your own evidence.</p></div>
+        <div class="card"><div class="ci">🇪🇺</div><h3>Built on EU standards</h3><p>did:key / W3C VC, eIDAS 2 &amp; EUDI-aligned, RFC 3161/6962 witnessing — mapped to EU AI Act Art. 12 record-keeping duties.</p></div>
+        <div class="card"><div class="ci">⚓</div><h3>Independent witnesses</h3><p>A record is anchored into several sources at once. It stays provable as long as any one survives, and stronger when several independently agree.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Not a slide — a working system</p>
+        <h2>Already built, tested, and proven against real infrastructure.</h2>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">266</div><div class="lbl">automated tests, passing</div></div>
+        <div class="stat"><div class="num">4</div><div class="lbl">independent anchor media</div></div>
+        <div class="stat"><div class="num">3</div><div class="lbl">byte-compatible verifiers (Elixir · JS · Rust)</div></div>
+        <div class="stat"><div class="num">100%</div><div class="lbl">offline — verification needs no server</div></div>
+      </div>
+      <p class="demo-note" style="text-align:left;margin-top:18px">
+        Validated live against the <b>Hedera testnet</b>, a real <b>RFC 3161</b> timestamp authority, and the official <b>EU List-of-Trusted-Lists</b>.
+        The native Hedera SDK <b>hedera_ex</b> is already open source on hex.pm.
+      </p>
+    </div>
+  </section>
+
+  <section id="opensource" class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Open source · standards</p>
+        <h2>The trust-critical parts are open — that's the whole point.</h2>
+        <p>A verifier you can't inspect can't be trusted. The format, the spec, and the verifiers are open; the server is source-available (AGPL); only optional managed hosting is commercial.</p>
+      </div>
+      <div class="std">
+        <span>W3C Verifiable Credentials</span>
+        <span>did:key (Ed25519)</span>
+        <span>JSON Canonicalization (RFC 8785)</span>
+        <span>Ed25519 (RFC 8032)</span>
+        <span>RFC 6962 transparency log</span>
+        <span>RFC 3161 timestamps</span>
+        <span>OpenID4VC · SD-JWT</span>
+        <span>eIDAS 2 / EUDI</span>
+        <span>EU AI Act Art. 12</span>
+      </div>
+      <p style="margin-top:26px"><a class="btn primary" href="https://github.com/Alex-erl/trustlayer">Browse the code on GitHub →</a></p>
+      <p class="demo-note" style="text-align:left;margin-top:14px">Install a verifier: <code>npm i trustlayer-verify</code> &nbsp;·&nbsp; <code>cargo add trustlayer-verify</code></p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="foot-cta">
+          <h3>Building the open accountability layer for AI agents.</h3>
+          <p>Developed in the open and aligned with EU digital-sovereignty goals. Seeking NGI / NLnet cascade funding to publish the verifiers, the spec, and EUDI/EBSI interoperability as public commons.</p>
+        </div>
+        <div class="foot-links">
+          <div class="foot-col">
+            <h4>Project</h4>
+            <a href="#demo">Live demo</a>
+            <a href="#how">How it works</a>
+            <a href="#opensource">Open source</a>
+          </div>
+          <div class="foot-col">
+            <h4>Code</h4>
+            <a href="https://github.com/Alex-erl/trustlayer">GitHub repository</a>
+            <a href="https://github.com/Alex-erl/trustlayer/blob/main/SPEC.md">Evidence format spec</a>
+            <a href="https://www.npmjs.com/package/trustlayer-verify">Verifier — npm</a>
+            <a href="https://crates.io/crates/trustlayer-verify">Verifier — crates.io</a>
+            <a href="https://hex.pm/packages/hedera_ex">hedera_ex (hex.pm)</a>
+          </div>
+        </div>
+      </div>
+      <div class="colophon">
+        <span>TrustLayer — verifiable accountability for AI agents.</span>
+        <span>Verification is always free. Verify the math, not the vendor.</span>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+"use strict";
+
+// ---- the real evidence bundle (produced by the Elixir reference engine) ----
+const GENUINE = {"bundle_hash":"8812fe2645909af64c229629f39628dda435ed041bc14aba15ce5b32ffde62f9","bundle_version":"1.0","event":{"action":"charge.created","agent_id":"b28045d7-5147-41a9-b8c9-80aa2412bd34","anchors":[{"adapter":"hedera-mock","anchored_at":"2026-07-03T06:43:46Z","reference":{"consensus_timestamp":"1701736185.000000000","message_hash":"0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad","network":"mock-testnet","running_hash":"9bb8022697ddbc9d7ed97f6111f5f4332df6322c805b1742de2b5164eb022df4","sequence_number":444767,"simulated":true,"topic_id":"0.0.9339331","transaction_id":"0.0.9339331@1730995103.000000000"}},{"adapter":"internal-notary","anchored_at":"2026-07-03T06:43:46Z","reference":{"anchor_id":"1ff64b5d3f46df1405c0388ea8030a1e70abbb09a11a47fd0d7e6e8bb3f38e9f","anchored_hash":"0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad","notary":"internal-notary"}},{"adapter":"transparency-log","anchored_at":"2026-07-03T06:43:46Z","reference":{"algorithm":"rfc6962-sha256+ed25519","audit_path":[],"leaf_hash":"8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425","leaf_index":0,"log_id":"6fbaf30658265095ee65d90814e9eeb846ec66188d906795b9eab4c2ae7a6c26","public_key":"2de3510151ea7ba7b401eebd23210d1df5ecbf7b1ec9c01f9cbba3456b441979","root_hash":"8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425","sth_signature":"09b453de958a87c3f58ba674b36f16ab822615ed050eed9c314d7423c32725e3780e3e4e54514b796b82537471d31c803940ee42724819b3282d749c9f519a0c","tree_size":1}}],"authority":{"issuer":"did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP","mandate_id":"urn:mandate:23520e28fa0660c5","proof":{"proofValue":"87fe8c4556a5cb4fc6dc3066619e00e123ac60b4416689001100e898fe2dd742b30761b9d69668a51e1b1a217a313e630c37faa5cbeccfabf18b8b2b75e33806","type":"Ed25519Signature2020","verificationMethod":"did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP#key-1"},"scope":{"action":"charge.created","currency":"EUR","max_amount":5000},"subject":"did:key:z6Mkee3pazxqoJ6bVRZhjHmEYCFbn29pf5zE9bSfh63sb76d","type":"IntentMandate"},"created_at":"2026-07-03T06:43:46Z","id":"6428ab37-062f-4f3b-94bc-2b9f85463318","identity":{"@context":["https://www.w3.org/ns/credentials/v2"],"credentialSubject":{"controller":"acme-corp","id":"did:key:z6Mkee3pazxqoJ6bVRZhjHmEYCFbn29pf5zE9bSfh63sb76d"},"issuanceDate":"2026-07-03T06:43:46Z","issuer":"did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP","proof":{"proofValue":"adf91409aec3c0ab74aa8a81bbb1a9fea21b9b382ed8439affe0c9299f71d104a62b097c547e16a44ef224b72bee0a844332db5965e11abd3bed63431e96dd0c","type":"Ed25519Signature2020","verificationMethod":"did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP#key-1"},"type":["VerifiableCredential","AgentControlCredential"]},"org_id":"acme-corp","payload":{"amount":4200,"currency":"EUR","invoice":"INV-1"},"payload_hash":"0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad"},"generated_at":"2026-07-03T06:43:46Z","proof":{"note":"live re-verification report (informational)"},"retention":{"policy_days":365,"retain_until":"2027-07-03T06:43:46Z"},"verification_instructions":["Recompute SHA-256 over the canonical JSON of event.payload.","Re-verify each anchor on its medium.","Resolve the did:key issuers and check the Ed25519 signatures.","Recompute bundle_hash over the object (excluding bundle_hash)."]};
+
+const enc = new TextEncoder();
+const isObj = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
+
+// ---- canonical JSON (byte-sorted keys) == TrustLayer.Crypto ----
+function canonicalJson(v) {
+  if (v === null) return "null";
+  const t = typeof v;
+  if (t === "boolean") return v ? "true" : "false";
+  if (t === "number") return JSON.stringify(v);
+  if (t === "string") return JSON.stringify(v);
+  if (Array.isArray(v)) return "[" + v.map(canonicalJson).join(",") + "]";
+  const keys = Object.keys(v).sort(byteCompare);
+  return "{" + keys.map((k) => JSON.stringify(k) + ":" + canonicalJson(v[k])).join(",") + "}";
+}
+function byteCompare(a, b) {
+  const A = enc.encode(a), B = enc.encode(b), n = Math.min(A.length, B.length);
+  for (let i = 0; i < n; i++) if (A[i] !== B[i]) return A[i] - B[i];
+  return A.length - B.length;
+}
+async function sha256hex(str) {
+  const buf = await crypto.subtle.digest("SHA-256", enc.encode(str));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+const canonicalHash = async (v) => sha256hex(canonicalJson(v));
+
+// ---- did:key (Ed25519) ----
+const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const B58I = new Map([...B58].map((c, i) => [c, i]));
+function b58decode(s) {
+  let n = 0n;
+  for (const c of s) { const v = B58I.get(c); if (v === undefined) throw new Error("b58"); n = n * 58n + BigInt(v); }
+  const body = []; while (n > 0n) { body.unshift(Number(n & 255n)); n >>= 8n; }
+  let z = 0; for (const c of s) { if (c === "1") z++; else break; }
+  return new Uint8Array([...new Array(z).fill(0), ...body]);
+}
+function resolveEd(did) {
+  const p = "did:key:z";
+  if (typeof did !== "string" || !did.startsWith(p)) throw new Error("did");
+  const d = b58decode(did.slice(p.length));
+  if (d.length !== 34 || d[0] !== 0xed || d[1] !== 0x01) throw new Error("codec");
+  return d.slice(2);
+}
+function hexToBytes(h) { const a = new Uint8Array(h.length / 2); for (let i = 0; i < a.length; i++) a[i] = parseInt(h.substr(i * 2, 2), 16); return a; }
+
+// returns "ok" | "failed" | "unsupported"
+async function verifyProof(doc) {
+  if (!isObj(doc) || !isObj(doc.proof) || typeof doc.issuer !== "string") return "failed";
+  const pv = doc.proof.proofValue;
+  if (typeof pv !== "string" || pv.length % 2 || !/^[0-9a-f]*$/.test(pv)) return "failed";
+  let pub, sig;
+  try { pub = resolveEd(doc.issuer); sig = hexToBytes(pv); } catch { return "failed"; }
+  const { proof, ...unsigned } = doc;
+  const msg = enc.encode(canonicalJson(unsigned));
+  try {
+    const key = await crypto.subtle.importKey("raw", pub, { name: "Ed25519" }, false, ["verify"]);
+    return (await crypto.subtle.verify({ name: "Ed25519" }, key, sig, msg)) ? "ok" : "failed";
+  } catch { return "unsupported"; }
+}
+
+function withinScope(scope, action, payload) {
+  if (!isObj(scope) || !isObj(payload)) return false;
+  const actionOk = scope.action == null || scope.action === action;
+  const max = scope.max_amount, amt = payload.amount;
+  const amountOk = max == null || (typeof max === "number" && typeof amt === "number" && amt <= max);
+  const ccy = payload.currency ?? payload.ccy;
+  const ccyOk = scope.currency == null || scope.currency === ccy;
+  return actionOk && amountOk && ccyOk;
+}
+
+async function verifyBundle(bundle) {
+  const event = isObj(bundle.event) ? bundle.event : {};
+  const { bundle_hash, ...rest } = bundle;
+  const bRecomputed = await canonicalHash(rest);
+  const pRecomputed = await canonicalHash(event.payload ?? null);
+
+  const cred = event.identity, mand = event.authority;
+  let identity = { status: "not_applicable", detail: "no credential in this record" };
+  if (cred != null) {
+    const r = await verifyProof(cred);
+    identity = r === "ok" && isObj(cred.credentialSubject)
+      ? { status: "ok", detail: "agent credential signature verifies" }
+      : r === "unsupported"
+        ? { status: "unsupported", detail: "Ed25519 not available in this browser" }
+        : { status: "failed", detail: "credential signature does NOT verify" };
+  }
+
+  let authority = { status: "not_applicable", detail: "no mandate in this record" };
+  if (mand != null) {
+    const r = await verifyProof(mand);
+    if (r === "unsupported") authority = { status: "unsupported", detail: "Ed25519 not available in this browser" };
+    else if (r !== "ok") authority = { status: "failed", detail: "mandate signature does NOT verify" };
+    else authority = withinScope(isObj(mand.scope) ? mand.scope : {}, event.action, event.payload)
+      ? { status: "ok", detail: "mandate verifies and the action is in scope" }
+      : { status: "failed", detail: "action is OUTSIDE the granted mandate scope" };
+  }
+
+  let delegation = { status: "not_applicable", detail: "no credential + mandate pair" };
+  if (isObj(cred) && isObj(mand)) {
+    const consistent = cred.issuer === mand.issuer && isObj(cred.credentialSubject) && cred.credentialSubject.id === mand.subject;
+    delegation = consistent
+      ? { status: "ok", detail: "credential and mandate form one consistent chain" }
+      : { status: "failed", detail: "credential and mandate do NOT match — broken chain" };
+  }
+
+  const checks = {
+    bundle_integrity: bRecomputed === bundle_hash
+      ? { status: "ok", detail: "bundle_hash matches the bundle contents" }
+      : { status: "failed", detail: "the bundle has been altered since it was sealed" },
+    payload_integrity: pRecomputed === event.payload_hash
+      ? { status: "ok", detail: "payload_hash matches the payload" }
+      : { status: "failed", detail: "the payload no longer matches its recorded hash" },
+    identity, authority, delegation,
+  };
+
+  const passed = (c) => c.status === "ok" || c.status === "not_applicable" || c.status === "unsupported";
+  return {
+    checks,
+    verified: Object.values(checks).every(passed),
+    hasUnsupported: Object.values(checks).some((c) => c.status === "unsupported"),
+    bundle: { recomputed: bRecomputed, recorded: bundle_hash, match: bRecomputed === bundle_hash },
+    payload: { recomputed: pRecomputed, recorded: event.payload_hash, match: pRecomputed === event.payload_hash },
+    anchors: (event.anchors || []).map((a) => a.adapter),
+  };
+}
+
+// ---- scenarios ----
+const SCN = {
+  genuine: { pill: "genuine", note: "Genuine record, exactly as sealed by the engine." },
+  amount:  { pill: "tampered", note: "Payload amount changed to 99,999 — the hashes no longer match." },
+  action:  { pill: "tampered", note: "Action changed to charge.refunded — breaks the seal and exceeds the mandate." },
+  forge:   { pill: "tampered", note: "One byte of the credential signature was flipped, then the bundle re-sealed." },
+  deleg:   { pill: "tampered", note: "The mandate now points at a different agent than the credential." },
+};
+
+async function buildScenario(name) {
+  const b = structuredClone(GENUINE);
+  if (name === "amount") {
+    b.event.payload.amount = 99999;
+  } else if (name === "action") {
+    b.event.action = "charge.refunded";
+  } else if (name === "forge") {
+    const pv = b.event.identity.proof.proofValue;
+    b.event.identity.proof.proofValue = (pv[0] === "0" ? "1" : "0") + pv.slice(1);
+    await reseal(b); // repair the outer seal so only the signature check fails
+  } else if (name === "deleg") {
+    b.event.authority.subject = "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH";
+    await reseal(b);
+  }
+  return b;
+}
+async function reseal(b) {
+  const { bundle_hash, ...rest } = b;
+  b.bundle_hash = await canonicalHash(rest);
+  return b;
+}
+
+// ---- rendering ----
+const $ = (id) => document.getElementById(id);
+const shortDid = (d) => d.length > 24 ? d.slice(0, 12) + "…" + d.slice(-5) : d;
+const CHECK_LABEL = {
+  bundle_integrity: "Bundle integrity",
+  payload_integrity: "Payload integrity",
+  identity: "Agent identity",
+  authority: "Authority & scope",
+  delegation: "Delegation chain",
+};
+const ICON = { ok: "✓", failed: "✗", not_applicable: "–", unsupported: "?" };
+
+function renderReceipt(b, scn) {
+  const ev = b.event;
+  $("f-action").textContent = ev.action;
+  $("f-action").classList.toggle("changed", ev.action !== "charge.created");
+  $("f-amount").textContent = ev.payload.amount + " " + (ev.payload.currency || "");
+  $("f-amount").classList.toggle("changed", ev.payload.amount !== 4200);
+  $("f-agent").textContent = shortDid(ev.identity.credentialSubject.id);
+  $("f-issuer").textContent = shortDid(ev.identity.issuer);
+  const subChanged = ev.authority.subject !== GENUINE.event.authority.subject;
+  $("f-scope").textContent = subChanged ? "→ different agent" : "charge.created ≤ 5000 EUR";
+  $("f-scope").classList.toggle("changed", subChanged);
+  const pill = $("statePill");
+  pill.textContent = scn.pill;
+  pill.className = "state-pill " + scn.pill;
+  const nEl = $("tamperNote");
+  nEl.textContent = scn.note;
+  nEl.classList.toggle("active", scn.pill === "tampered");
+  $("rawJson").textContent = JSON.stringify(b, null, 2);
+}
+
+function renderReport(r) {
+  const v = $("verdict"), seal = $("seal");
+  const good = r.verified && !r.hasUnsupported;
+  v.className = "verdict " + (r.verified ? "ok" : "bad");
+  seal.textContent = r.verified ? "✓" : "✗";
+  $("vTitle").textContent = r.verified ? "Verified" : "Not verified";
+  $("vSub").textContent = r.verified
+    ? (r.hasUnsupported ? "Integrity confirmed; signatures need a current browser." : "Every self-contained check passed.")
+    : "One or more checks failed — the record can't be trusted.";
+
+  const ul = $("checks"); ul.innerHTML = "";
+  for (const [key, c] of Object.entries(r.checks)) {
+    const li = document.createElement("li");
+    li.className = c.status;
+    li.innerHTML = `<span class="ic">${ICON[c.status] || "?"}</span><span><span class="nm">${CHECK_LABEL[key]}</span><br><span class="dt">${c.detail}</span></span>`;
+    ul.appendChild(li);
+  }
+
+  hashRow("h-bundle", r.bundle);
+  hashRow("h-payload", r.payload);
+
+  const al = $("anchorList"); al.innerHTML = "";
+  const MED = { "hedera-mock": "simulated ledger", "hedera-hcs": "Hedera Consensus Service", "internal-notary": "internal notary", "transparency-log": "RFC 6962 transparency log", "eidas-rfc3161": "RFC 3161 timestamp" };
+  for (const a of r.anchors) {
+    const li = document.createElement("li");
+    li.innerHTML = `<span>⚓</span><span><b>${a}</b> — ${MED[a] || a}</span>`;
+    al.appendChild(li);
+  }
+}
+function hashRow(id, h) {
+  const el = $(id);
+  el.className = "hval " + (h.match ? "match" : "mismatch");
+  el.innerHTML =
+    `<span class="tag">recomputed</span><span class="num">${h.recomputed}</span><br>` +
+    `<span class="tag">recorded&nbsp;&nbsp;</span><span class="num">${h.recorded}</span>`;
+}
+
+let busy = false;
+async function run(name) {
+  if (busy) return; busy = true;
+  const scn = SCN[name] || SCN.genuine;
+  const b = await buildScenario(name);
+  renderReceipt(b, scn);
+  const r = await verifyBundle(b);
+  renderReport(r);
+  busy = false;
+}
+
+document.querySelectorAll(".chip").forEach((btn) =>
+  btn.addEventListener("click", () => run(btn.dataset.scn))
+);
+run("genuine");
+</script>
+
+</body>
+</html>
