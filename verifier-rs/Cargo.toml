@@ -1,0 +1,23 @@
+[package]
+name = "trustlayer-verify"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Independent, offline verification of TrustLayer evidence bundles — no service, no database, no network."
+repository = "https://github.com/Alex-erl/trustlayer"
+readme = "README.md"
+keywords = ["verifiable-credentials", "did", "ed25519", "audit", "eidas"]
+categories = ["cryptography"]
+
+[dependencies]
+serde_json = "1"
+sha2 = "0.10"
+ed25519-dalek = "2"
+
+[lib]
+name = "trustlayer_verify"
+path = "src/lib.rs"
+
+[[bin]]
+name = "trustlayer-verify"
+path = "src/main.rs"

@@ -17,15 +17,17 @@ and anyone can re-implement it.
 |---|---|---|
 | [`SPEC.md`](./SPEC.md) | The Evidence Bundle format + verification algorithm, language-neutral. | Apache-2.0 |
 | [`verifier-js/`](./verifier-js) | `@trustlayer/verify` — offline verifier + CLI (Node.js, zero deps). | Apache-2.0 |
+| [`verifier-rs/`](./verifier-rs) | `trustlayer-verify` — offline verifier + CLI (Rust). | Apache-2.0 |
 
-Planned: a Rust verifier, and a browser (Web Crypto) build of the JS verifier.
+Two independent verifiers (JavaScript and Rust) reproduce the same hashes and
+signatures byte-for-byte, proving the format is verifiable independently of any
+one implementation. Planned: a browser (Web Crypto) build.
 
 ## Try it
 
 ```sh
-cd verifier-js
-npm test                       # cross-language byte-compatibility tests
-node bin/cli.js sample-bundle.json
+cd verifier-js && npm test && node bin/cli.js sample-bundle.json   # JavaScript
+cd verifier-rs && cargo test && cargo run -- sample-bundle.json     # Rust
 ```
 
 `sample-bundle.json` is a real bundle produced by the (Elixir) reference

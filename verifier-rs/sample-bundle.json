@@ -1,0 +1,223 @@
+{
+  "bundle_hash": "8812fe2645909af64c229629f39628dda435ed041bc14aba15ce5b32ffde62f9",
+  "bundle_version": "1.0",
+  "event": {
+    "action": "charge.created",
+    "agent_id": "b28045d7-5147-41a9-b8c9-80aa2412bd34",
+    "anchors": [
+      {
+        "adapter": "hedera-mock",
+        "anchored_at": "2026-07-03T06:43:46Z",
+        "reference": {
+          "consensus_timestamp": "1701736185.000000000",
+          "message_hash": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+          "network": "mock-testnet",
+          "running_hash": "9bb8022697ddbc9d7ed97f6111f5f4332df6322c805b1742de2b5164eb022df4",
+          "sequence_number": 444767,
+          "simulated": true,
+          "topic_id": "0.0.9339331",
+          "transaction_id": "0.0.9339331@1730995103.000000000"
+        }
+      },
+      {
+        "adapter": "internal-notary",
+        "anchored_at": "2026-07-03T06:43:46Z",
+        "reference": {
+          "anchor_id": "1ff64b5d3f46df1405c0388ea8030a1e70abbb09a11a47fd0d7e6e8bb3f38e9f",
+          "anchored_hash": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+          "notary": "internal-notary"
+        }
+      },
+      {
+        "adapter": "transparency-log",
+        "anchored_at": "2026-07-03T06:43:46Z",
+        "reference": {
+          "algorithm": "rfc6962-sha256+ed25519",
+          "audit_path": [],
+          "leaf_hash": "8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425",
+          "leaf_index": 0,
+          "log_id": "6fbaf30658265095ee65d90814e9eeb846ec66188d906795b9eab4c2ae7a6c26",
+          "public_key": "2de3510151ea7ba7b401eebd23210d1df5ecbf7b1ec9c01f9cbba3456b441979",
+          "root_hash": "8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425",
+          "sth_signature": "09b453de958a87c3f58ba674b36f16ab822615ed050eed9c314d7423c32725e3780e3e4e54514b796b82537471d31c803940ee42724819b3282d749c9f519a0c",
+          "tree_size": 1
+        }
+      }
+    ],
+    "authority": {
+      "issuer": "did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP",
+      "mandate_id": "urn:mandate:23520e28fa0660c5",
+      "proof": {
+        "proofValue": "87fe8c4556a5cb4fc6dc3066619e00e123ac60b4416689001100e898fe2dd742b30761b9d69668a51e1b1a217a313e630c37faa5cbeccfabf18b8b2b75e33806",
+        "type": "Ed25519Signature2020",
+        "verificationMethod": "did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP#key-1"
+      },
+      "scope": {
+        "action": "charge.created",
+        "currency": "EUR",
+        "max_amount": 5000
+      },
+      "subject": "did:key:z6Mkee3pazxqoJ6bVRZhjHmEYCFbn29pf5zE9bSfh63sb76d",
+      "type": "IntentMandate"
+    },
+    "created_at": "2026-07-03T06:43:46Z",
+    "id": "6428ab37-062f-4f3b-94bc-2b9f85463318",
+    "identity": {
+      "@context": [
+        "https://www.w3.org/ns/credentials/v2"
+      ],
+      "credentialSubject": {
+        "controller": "acme-corp",
+        "id": "did:key:z6Mkee3pazxqoJ6bVRZhjHmEYCFbn29pf5zE9bSfh63sb76d"
+      },
+      "issuanceDate": "2026-07-03T06:43:46Z",
+      "issuer": "did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP",
+      "proof": {
+        "proofValue": "adf91409aec3c0ab74aa8a81bbb1a9fea21b9b382ed8439affe0c9299f71d104a62b097c547e16a44ef224b72bee0a844332db5965e11abd3bed63431e96dd0c",
+        "type": "Ed25519Signature2020",
+        "verificationMethod": "did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP#key-1"
+      },
+      "type": [
+        "VerifiableCredential",
+        "AgentControlCredential"
+      ]
+    },
+    "org_id": "acme-corp",
+    "payload": {
+      "amount": 4200,
+      "currency": "EUR",
+      "invoice": "INV-1"
+    },
+    "payload_hash": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad"
+  },
+  "generated_at": "2026-07-03T06:43:46Z",
+  "proof": {
+    "anchors": [
+      {
+        "adapter": "hedera-mock",
+        "steps": [
+          {
+            "description": "Locate the consensus message by topic id and sequence number on the (simulated) mirror node.",
+            "name": "mirror_node_lookup",
+            "sequence_number": 444767,
+            "status": "ok",
+            "topic_id": "0.0.9339331"
+          },
+          {
+            "actual": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+            "description": "The hash submitted to the topic matches the event payload_hash.",
+            "expected": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+            "name": "message_hash_match",
+            "status": "ok"
+          },
+          {
+            "actual": "9bb8022697ddbc9d7ed97f6111f5f4332df6322c805b1742de2b5164eb022df4",
+            "description": "Recompute the HCS running hash from (topic, sequence, consensus timestamp, message) and compare.",
+            "expected": "9bb8022697ddbc9d7ed97f6111f5f4332df6322c805b1742de2b5164eb022df4",
+            "name": "running_hash_integrity",
+            "status": "ok"
+          }
+        ],
+        "verified": true
+      },
+      {
+        "adapter": "internal-notary",
+        "steps": [
+          {
+            "actual": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+            "description": "The hash recorded by the notary matches the event payload_hash.",
+            "expected": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+            "name": "anchored_hash_match",
+            "status": "ok"
+          },
+          {
+            "actual": "1ff64b5d3f46df1405c0388ea8030a1e70abbb09a11a47fd0d7e6e8bb3f38e9f",
+            "description": "Recompute the deterministic notary anchor id and compare.",
+            "expected": "1ff64b5d3f46df1405c0388ea8030a1e70abbb09a11a47fd0d7e6e8bb3f38e9f",
+            "name": "anchor_id_integrity",
+            "status": "ok"
+          }
+        ],
+        "verified": true
+      },
+      {
+        "adapter": "transparency-log",
+        "steps": [
+          {
+            "actual": "8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425",
+            "description": "Recompute the RFC 6962 leaf hash of the payload hash and compare.",
+            "expected": "8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425",
+            "name": "transparency_leaf",
+            "status": "ok"
+          },
+          {
+            "actual": "8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425",
+            "description": "Rebuild the Merkle root from the leaf and audit path; compare to the signed root.",
+            "expected": "8e7caa679c7ee158a625fc3c217101e3446c1358b0323498faea537c8c266425",
+            "leaf_index": 0,
+            "name": "merkle_inclusion",
+            "status": "ok",
+            "tree_size": 1
+          },
+          {
+            "description": "Verify the Ed25519 signature over (tree_size ‖ root) with the log's public key.",
+            "log_id": "6fbaf30658265095ee65d90814e9eeb846ec66188d906795b9eab4c2ae7a6c26",
+            "name": "signed_tree_head",
+            "status": "ok"
+          }
+        ],
+        "verified": true
+      }
+    ],
+    "authority": {
+      "issuer": "did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP",
+      "mandate_id": "urn:mandate:23520e28fa0660c5",
+      "name": "mandate",
+      "scope": {
+        "action": "charge.created",
+        "currency": "EUR",
+        "max_amount": 5000
+      },
+      "subject": "did:key:z6Mkee3pazxqoJ6bVRZhjHmEYCFbn29pf5zE9bSfh63sb76d",
+      "verified": true,
+      "within_scope": true
+    },
+    "delegation": {
+      "agent_binding": true,
+      "consistent": true,
+      "description": "Credential and mandate share one issuing principal and reference the same agent.",
+      "name": "delegation_chain",
+      "same_issuer": true,
+      "same_subject": true,
+      "status": "ok"
+    },
+    "event_id": "6428ab37-062f-4f3b-94bc-2b9f85463318",
+    "identity": {
+      "controller": "acme-corp",
+      "issuer": "did:key:z6MkwB5TY2nHtQZzd5uACPrZXhJYaEhu6vhE8XHgYj4uGwEP",
+      "name": "agent_credential",
+      "subject": "did:key:z6Mkee3pazxqoJ6bVRZhjHmEYCFbn29pf5zE9bSfh63sb76d",
+      "type": "AgentControlCredential",
+      "verified": true
+    },
+    "payload_hash": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+    "payload_integrity": {
+      "actual": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+      "description": "Recompute SHA-256 over the canonical JSON of the stored payload and compare to the recorded payload_hash.",
+      "expected": "0419a60ebd2a79c36ce8371b062450d579fa634f7ebd5cb01be479a9474764ad",
+      "name": "recompute_payload_hash",
+      "status": "ok"
+    },
+    "verified": true
+  },
+  "retention": {
+    "policy_days": 365,
+    "retain_until": "2027-07-03T06:43:46Z"
+  },
+  "verification_instructions": [
+    "1. Recompute SHA-256 over the canonical JSON of event.payload; it must equal event.payload_hash.",
+    "2. For each anchor, re-verify on its medium: Hedera via the mirror node, the transparency log via its inclusion proof + signed tree head, RFC 3161 via the timestamp token's message imprint.",
+    "3. If present, verify identity/authority: resolve the did:key issuers and check the Ed25519 signatures; confirm the delegation chain is consistent.",
+    "4. Recompute bundle_hash over this object (excluding bundle_hash) to confirm the bundle itself is intact."
+  ]
+}
