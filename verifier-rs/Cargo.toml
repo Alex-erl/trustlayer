@@ -6,7 +6,7 @@ license = "Apache-2.0"
 description = "Independent, offline verification of TrustLayer evidence bundles — no service, no database, no network."
 repository = "https://github.com/Alex-erl/trustlayer"
 readme = "README.md"
-keywords = ["verifiable-credentials", "did", "ed25519", "audit", "eidas"]
+keywords = ["credentials", "did", "ed25519", "audit", "eidas"]
 categories = ["cryptography"]
 
 [dependencies]
