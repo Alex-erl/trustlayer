@@ -30,6 +30,15 @@ cd verifier-js && npm test && node bin/cli.js sample-bundle.json   # JavaScript
 cd verifier-rs && cargo test && cargo run -- sample-bundle.json     # Rust
 ```
 
+## Install
+
+Both verifiers are published:
+
+```sh
+npm install trustlayer-verify     # JavaScript / Node — https://www.npmjs.com/package/trustlayer-verify
+cargo add trustlayer-verify       # Rust           — https://crates.io/crates/trustlayer-verify
+```
+
 `sample-bundle.json` is a real bundle produced by the (Elixir) reference
 service; the tests recompute its hashes here and confirm they match — proving the
 format is verifiable independently of the implementation that wrote it.

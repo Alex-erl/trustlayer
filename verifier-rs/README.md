@@ -10,6 +10,14 @@ the [evidence bundle format](../SPEC.md), in Rust.
 > implementations — the same `bundle_hash`, the same `payload_hash`, the same
 > Ed25519/`did:key` proofs, computed independently in three languages.
 
+## Install
+
+```sh
+cargo add trustlayer-verify
+```
+
+Published on [crates.io](https://crates.io/crates/trustlayer-verify).
+
 ## CLI
 
 ```sh
