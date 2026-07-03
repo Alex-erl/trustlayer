@@ -1,5 +1,5 @@
 //! Canonical JSON + SHA-256, byte-for-byte compatible with the Elixir
-//! `TrustLayer.Crypto` module and the JavaScript `@trustlayer/verify` package.
+//! `TrustLayer.Crypto` module and the JavaScript `trustlayer-verify` package.
 //!
 //! * objects — keys sorted lexicographically by their UTF-8 bytes, recursively
 //! * arrays  — element order preserved

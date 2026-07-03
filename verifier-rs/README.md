@@ -6,7 +6,7 @@ the [evidence bundle format](../SPEC.md), in Rust.
 
 > The premise of TrustLayer is *don't trust the operator — verify the math.*
 > This crate re-checks a bundle's cryptography from scratch and is byte-for-byte
-> compatible with the JavaScript (`@trustlayer/verify`) and Elixir reference
+> compatible with the JavaScript (`trustlayer-verify`) and Elixir reference
 > implementations — the same `bundle_hash`, the same `payload_hash`, the same
 > Ed25519/`did:key` proofs, computed independently in three languages.
 

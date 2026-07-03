@@ -1,6 +1,6 @@
 'use strict';
 
-// @trustlayer/verify — independent, offline verification of TrustLayer
+// trustlayer-verify — independent, offline verification of TrustLayer
 // evidence bundles. No service, no database, no network.
 
 const { canonicalJson, canonicalHash } = require('./lib/canonical');

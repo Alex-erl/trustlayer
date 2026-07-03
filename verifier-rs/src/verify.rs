@@ -1,7 +1,7 @@
 //! Offline verification of a TrustLayer evidence bundle.
 //!
 //! Mirrors, check-for-check, the reference verifier in
-//! `TrustLayer.Core.Evidence.Verifier` (Elixir) and `@trustlayer/verify` (JS):
+//! `TrustLayer.Core.Evidence.Verifier` (Elixir) and `trustlayer-verify` (JS):
 //!
 //! * `bundle_integrity`  — the export itself is intact (bundle_hash);
 //! * `payload_integrity` — the recorded payload_hash matches the payload;

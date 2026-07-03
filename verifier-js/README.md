@@ -1,4 +1,4 @@
-# @trustlayer/verify
+# trustlayer-verify
 
 Independent, **offline** verification of TrustLayer evidence bundles — no
 service, no database, no network. Point it at an exported bundle and it
@@ -12,7 +12,7 @@ re-checks the cryptography itself.
 ## Install
 
 ```sh
-npm install @trustlayer/verify
+npm install trustlayer-verify
 ```
 
 Zero runtime dependencies. Works on Node.js ≥ 18 (uses only the built-in
@@ -29,7 +29,7 @@ Exit code `0` if every self-contained check passed, `1` if any failed.
 ## Library
 
 ```js
-const { verifyBundle, canonicalHash } = require('@trustlayer/verify');
+const { verifyBundle, canonicalHash } = require('trustlayer-verify');
 
 const report = verifyBundle(bundle);
 report.verified;          // => true | false

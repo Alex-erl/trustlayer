@@ -9,7 +9,7 @@ intact, authentic, and authorized.
 
 This document specifies the format and the verification algorithm precisely
 enough to implement an independent verifier in any language. The reference
-implementations are [`@trustlayer/verify`](./verifier-js) (JavaScript) and
+implementations are [`trustlayer-verify`](./verifier-js) (JavaScript) and
 `TrustLayer.Core.Evidence.Verifier` (Elixir); both are tested against the same
 bundle and agree byte-for-byte.
 

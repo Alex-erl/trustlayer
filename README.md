@@ -16,7 +16,7 @@ and anyone can re-implement it.
 | Path | What it is | License |
 |---|---|---|
 | [`SPEC.md`](./SPEC.md) | The Evidence Bundle format + verification algorithm, language-neutral. | Apache-2.0 |
-| [`verifier-js/`](./verifier-js) | `@trustlayer/verify` — offline verifier + CLI (Node.js, zero deps). | Apache-2.0 |
+| [`verifier-js/`](./verifier-js) | `trustlayer-verify` — offline verifier + CLI (Node.js, zero deps). | Apache-2.0 |
 | [`verifier-rs/`](./verifier-rs) | `trustlayer-verify` — offline verifier + CLI (Rust). | Apache-2.0 |
 
 Two independent verifiers (JavaScript and Rust) reproduce the same hashes and

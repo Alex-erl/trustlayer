@@ -1,5 +1,5 @@
 {
-  "name": "@trustlayer/verify",
+  "name": "trustlayer-verify",
   "version": "0.1.0",
   "description": "Independent, offline verification of TrustLayer evidence bundles — no service, no database, no network.",
   "license": "Apache-2.0",
