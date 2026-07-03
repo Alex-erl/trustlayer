@@ -1,0 +1,34 @@
+{
+  "name": "@trustlayer/verify",
+  "version": "0.1.0",
+  "description": "Independent, offline verification of TrustLayer evidence bundles — no service, no database, no network.",
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "main": "index.js",
+  "bin": {
+    "trustlayer-verify": "bin/cli.js"
+  },
+  "files": [
+    "index.js",
+    "lib/",
+    "bin/"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "trustlayer",
+    "verifiable-credentials",
+    "did",
+    "did-key",
+    "ed25519",
+    "audit",
+    "evidence",
+    "eidas",
+    "ai-act",
+    "tamper-evident"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
