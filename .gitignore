@@ -1,0 +1,7 @@
+# build artifacts
+target/
+node_modules/
+*.tgz
+
+# OS
+.DS_Store
