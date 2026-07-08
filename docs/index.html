@@ -282,6 +282,7 @@
       <a href="#demo">Live demo</a>
       <a href="#how">How it works</a>
       <a href="#why">Why it matters</a>
+      <a href="#get-started">Get started</a>
       <a class="nav-cta" href="#opensource">Open source</a>
     </nav>
   </div>
@@ -471,6 +472,25 @@
     </div>
   </section>
 
+  <section id="get-started" class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Get started · self-serve</p>
+        <h2>Try it in 30 seconds — no sales call, no admin.</h2>
+        <p>Sign yourself up with email, password and a TOTP code and get a <b>sandbox API key instantly</b>. These three public endpoints also back the one-click signup widget in the self-hosted dashboard.</p>
+      </div>
+      <pre class="raw" style="max-height:none">$ curl -sX POST $BASE/auth/register -H 'content-type: application/json' \
+    -d '{"email":"me@acme.io","password":"correct horse battery staple"}'
+  → { "otpauth_uri": "otpauth://totp/TrustLayer:me%40acme.io?secret=…", "totp_secret": "GEZD…" }
+
+# add the secret to your authenticator app (Google Authenticator, Authy, 1Password), then:
+$ curl -sX POST $BASE/auth/verify-otp -H 'content-type: application/json' \
+    -d '{"email":"me@acme.io","otp":"123456"}'
+  → { "api_key": "tlk_…", "roles": ["admin"], "plan": "sandbox" }   # instant sandbox key (scoped to your org)</pre>
+      <p class="demo-note" style="text-align:left;margin-top:14px">Verifying evidence needs no account at all — <code>npm i trustlayer-verify</code>. The account is only for <em>issuing</em>.</p>
+    </div>
+  </section>
+
   <footer>
     <div class="wrap">
       <div class="foot-grid">
@@ -483,6 +503,7 @@
             <h4>Project</h4>
             <a href="#demo">Live demo</a>
             <a href="#how">How it works</a>
+            <a href="#get-started">Get started</a>
             <a href="#opensource">Open source</a>
           </div>
           <div class="foot-col">
