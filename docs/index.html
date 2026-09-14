@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Verifiable accountability for AI agents — tamper-evident, offline-verifiable evidence bundles.">
-<title>TrustLayer — verifiable accountability for AI agents</title>
+<meta name="description" content="Tamper-evident records anyone can verify offline — evidence bundles bound to issuer identity and authorisation, witnessed independently.">
+<title>TrustLayer — verifiable records, checkable offline</title>
 <style>
   :root {
     --ink: #0E1520;
@@ -291,13 +291,15 @@
 <main>
   <section class="hero">
     <div class="wrap">
-      <p class="eyebrow">Open trust infrastructure <span class="dot">·</span> built for NGI / NLnet</p>
-      <h1>Prove what your AI agents did — <span class="accent">without trusting us.</span></h1>
+      <p class="eyebrow">Open trust infrastructure <span class="dot">·</span> offline-verifiable, no vendor lock-in</p>
+      <h1>Prove what your systems did — <span class="accent">without trusting the operator.</span></h1>
       <p class="lede">
-        Autonomous agents move money, sign, and decide on people's behalf. TrustLayer turns every
-        agent action into a tamper-evident <strong>evidence bundle</strong> — bound to the agent's
-        identity and authority, witnessed by independent sources, and <strong>verifiable offline by
-        anyone</strong>. No database to trust. No vendor lock-in. Just cryptography you can re-check yourself.
+        Records of what software did — a payment, an access, an automated decision — normally live in
+        the operator's own database, editable and re-datable. TrustLayer turns each record into a
+        tamper-evident <strong>evidence bundle</strong> — bound to the issuer's identity and the
+        authorisation it acted under, witnessed by independent sources, and <strong>verifiable offline
+        by anyone</strong>. No database to trust. No vendor lock-in. Just cryptography you can re-check
+        yourself. It matters most where software acts on someone's behalf.
       </p>
       <div class="cta-row">
         <a class="btn primary" href="#demo">Verify a real record, live ↓</a>
@@ -495,8 +497,8 @@ $ curl -sX POST $BASE/auth/verify-otp -H 'content-type: application/json' \
     <div class="wrap">
       <div class="foot-grid">
         <div class="foot-cta">
-          <h3>Building the open accountability layer for AI agents.</h3>
-          <p>Developed in the open and aligned with EU digital-sovereignty goals. Seeking NGI / NLnet cascade funding to publish the verifiers, the spec, and EUDI/EBSI interoperability as public commons.</p>
+          <h3>Building the open verification layer for consequential records.</h3>
+          <p>Developed in the open and aligned with EU digital-sovereignty goals. Publishing the verifiers, the format specification and EUDI/EBSI interoperability as public commons.</p>
         </div>
         <div class="foot-links">
           <div class="foot-col">
@@ -517,7 +519,7 @@ $ curl -sX POST $BASE/auth/verify-otp -H 'content-type: application/json' \
         </div>
       </div>
       <div class="colophon">
-        <span>TrustLayer — verifiable accountability for AI agents.</span>
+        <span>TrustLayer — verifiable records for delegated and automated actions.</span>
         <span>Verification is always free. Verify the math, not the vendor.</span>
       </div>
     </div>

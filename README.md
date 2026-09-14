@@ -1,9 +1,11 @@
 # TrustLayer — open verification core
 
-**Verifiable accountability for AI agents.** When an AI agent acts on someone's
-behalf — moves money, signs, decides — TrustLayer produces a tamper-evident,
-independently verifiable record of *who* the agent is, *what it was authorized to
-do*, and *what it actually did*.
+**Tamper-evident records, checkable offline by anyone.** When software acts —
+moves money, grants access, decides — the record of what it did normally lives in
+the operator's own database, editable and re-datable. TrustLayer produces instead a
+self-contained, independently verifiable record of *who* the issuer is, *what it was
+authorized to do*, and *what it actually did*. Software acting on someone's behalf,
+autonomously, is where this matters most.
 
 This repository holds the **open, standards-based parts** of TrustLayer: the
 evidence-bundle format, its specification, and reference verifiers. They are
